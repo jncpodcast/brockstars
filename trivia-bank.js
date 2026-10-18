@@ -1,2 +1,1 @@
-/* Prepared questions are fetched only after owner authentication. */
-const songTriviaBank=[];
+/* Retired entry point. Current accounts and shows use the signed-in online service. */

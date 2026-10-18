@@ -4,12 +4,8 @@ if(window.brockAccount?.origin){
  const oldRender=render;
  render=function(){
   if(!cloudMusic.ready){document.querySelector('#app').innerHTML='<section class="page-intro"><h1>YOUR BACKSTAGE PASS.</h1><p id="cloud-status" role="status">Connecting to your saved library…</p><a class="button dark" href="accounts.html">Sign in / manage account ↗</a></section>';return;}
-  if(location.hash!=='#setlists')location.hash='setlists';oldRender();
-  document.querySelectorAll('[data-show-qr],#reset,.demo-banner,.admin-link,.performer-game-nav,header nav').forEach(el=>el.hidden=true);
-  const top=document.querySelector('.stage-top');if(top){top.querySelector('.eyebrow').textContent='YOUR SAVED MUSIC';top.querySelector('h1').textContent='SONGS & QUICK SETS.';}
-  const notices=document.querySelectorAll('.planner > .notice');for(const el of notices)el.hidden=true;
-  const now=document.querySelector('.now-playing > span');if(now)now.textContent='NEXT SONG';
-  const intro=document.createElement('div');intro.className='notice';intro.textContent='Saved online · Revision '+cloudMusic.revision+'. Open the live show dashboard for requests and games.';const link=document.createElement('a');link.href='live.html';link.className='button dark';link.textContent='Open live show dashboard ↗';intro.append(' ',link);document.querySelector('.planner-layout')?.before(intro);
+  oldRender();
+  const intro=document.createElement('p');intro.className='cloud-save-status';intro.textContent='✓ Saved online';document.querySelector('.stage-top')?.after(intro);
  };
  plannerChange=async function(action,data={}){
   if(!cloudMusic.ready||cloudMusic.busy)return false;cloudMusic.busy=true;
@@ -23,7 +19,7 @@ if(window.brockAccount?.origin){
 
  render();
  (async()=>{try{
-  const {member}=await brockAccount.api('/api/me');if(member.role!=='owner'){location.href='accounts.html';return;}
+  const {member}=await brockAccount.api('/api/me');if(member.role!=='owner'){location.replace('live.html');return;}
   const bank=await brockAccount.api('/api/show/questions');for(const q of bank.questions){const i=triviaPresets.findIndex(x=>x.id===q.id);if(i<0)triviaPresets.push(q);else triviaPresets[i]=q;}const result=await brockAccount.api('/api/music');state.planning=result.planning;cloudMusic.revision=result.revision;cloudMusic.ready=true;ensurePlanner();render();
- }catch(error){document.querySelector('#cloud-status').textContent=error.message;}})();
+ }catch(error){const status=document.querySelector('#cloud-status');if(status)status.textContent=error.status===401?'Sign in with your performer account to continue.':error.message;}})();
 }
