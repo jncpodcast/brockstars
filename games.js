@@ -1,10 +1,5 @@
 /* Local-only show games. Answers and awards must move server-side for production. */
-const triviaPresets=[
- {id:'brandy-year',label:'BRANDY · RELEASE YEAR',question:'What year was “Brandy (You’re a Fine Girl)” released?',options:['1969','1972','1975','1978'],answer:1,fact:'Looking Glass released “Brandy (You’re a Fine Girl)” in 1972.'},
- {id:'brandy-artist',label:'BRANDY · ORIGINAL ARTIST',question:'Which band originally recorded “Brandy (You’re a Fine Girl)”?',options:['Looking Glass','Eagles','America','Bread'],answer:0,fact:'The original recording is by Looking Glass.'},
- {id:'guitar',label:'GUITAR · STRING THEORY',question:'How many strings does a standard guitar have?',options:['Four','Five','Six','Eight'],answer:2,fact:'Six! A warm-up question to get the whole table playing.'},
- {id:'piano',label:'PIANO · KEY QUESTION',question:'How many keys are on a standard full-size piano?',options:['61','76','88','96'],answer:2,fact:'A standard full-size piano has 88 keys.'}
-];
+const triviaPresets=[];
 // Keep legacy IDs valid and add song-specific starters before the first render.
 for(const q of (typeof songTriviaBank==='undefined'?[]:songTriviaBank)){const i=triviaPresets.findIndex(p=>p.id===q.id);if(i<0)triviaPresets.push(q);else triviaPresets[i]=q;}
 function shuffledTrivia(q){const order=q.options.map((_,i)=>i);for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}return {...q,options:order.map(i=>q.options[i]),answer:order.indexOf(q.answer)};}
